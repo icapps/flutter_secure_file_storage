@@ -2,7 +2,7 @@
 
 An implementation for flutter secure file storage. For example keychain has a soft limit of 4kb. Using the file system instead we can store much larger content
 
-AES encryption is used to encrypt the data. The keys are generated using the [encrypt](https://pub.dev/packages/encrypt) package and stored using the [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) package
+AES/GCM/NoPadding encryption is used to encrypt the data. The keys are generated using the [encrypt](https://pub.dev/packages/encrypt) package, encrypted by [pointycastle](https://pub.dev/packages/pointycastle) package and stored using the [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) package
 
 ## Usage
 

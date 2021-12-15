@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   encrypt: ^5.0.1
+  pointycastle: ^3.4.0
   flutter:
     sdk: flutter
   flutter_secure_storage: ^5.0.2
