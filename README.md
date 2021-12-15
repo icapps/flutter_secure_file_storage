@@ -9,6 +9,7 @@ AES encryption is used to encrypt the data. The keys are generated using the [en
 It's implemented to use the same structure as FlutterSecureStorage and therefore you can switch easily between them.
 
 ```dart
+import 'package:flutter_secure_file_storage/flutter_secure_file_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // Create storage
