@@ -1,3 +1,3 @@
-## 0.0.1
+## 0.0.1 - 16/12/2021
 
-* TODO: Describe initial release.
+* encrypt and decrypt files automatically and storing the keys in secure storage
