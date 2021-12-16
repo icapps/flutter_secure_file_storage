@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 
 class FileStorage {
@@ -6,10 +7,10 @@ class FileStorage {
 
   static Future<File> _localFile(String filename) async => File('${await _localPath}/$filename');
 
-  static Future<String?> read(String filename) async {
+  static Future<Uint8List?> read(String filename) async {
     try {
       final file = await _localFile(filename);
-      return file.readAsString();
+      return file.readAsBytes();
     } catch (e) {
       return null;
     }
@@ -24,9 +25,9 @@ class FileStorage {
     }
   }
 
-  static Future<File> write(String filename, String content) async {
+  static Future<File> write(String filename, Uint8List content) async {
     final file = await _localFile(filename);
-    return file.writeAsString(content);
+    return file.writeAsBytes(content);
   }
 
   static Future<void> delete(String filename) async {
