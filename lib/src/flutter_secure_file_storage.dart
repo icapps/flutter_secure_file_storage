@@ -27,7 +27,7 @@ class FlutterSecureFileStorage {
     if (value == null) return delete(key: key);
     final encryptionKey = await _secureStorage.getOrGenerateKey(key);
     final encryptionIV = await _secureStorage.generateIV(key);
-    final encrypted = EncryptionUtil.encrypt(encryptionKey, encryptionIV, value);
+    final encrypted = await EncryptionUtil.encrypt(encryptionKey, encryptionIV, value) ?? '';
     await FileStorage.write(_filename(key), encrypted);
     _keys.add(key);
   }

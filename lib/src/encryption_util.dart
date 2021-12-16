@@ -1,13 +1,20 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart';
+import 'package:flutter_secure_file_storage/src/encryption_parameters.dart';
 import "package:pointycastle/pointycastle.dart";
 
 class EncryptionUtil {
   static final Random _generator = Random.secure();
+  static const platform = MethodChannel('be.icapps.flutter_secure_file_storage');
+
+  static bool get isPlaformSupported => Platform.isAndroid;
 
   static Uint8List generateSecureKey() => _fromSecureRandom(32);
+
   static Uint8List generateSecureIV() => _fromSecureRandom(16);
 
   static BlockCipher _encrypter(Uint8List key, Uint8List iv, {bool encryptContent = false}) {
@@ -18,11 +25,17 @@ class EncryptionUtil {
 
   static Uint8List _toUint8List(String string) => Uint8List.fromList(string.codeUnits);
 
-  static String encrypt(Uint8List key, Uint8List iv, String value) {
+  static Future<String?> encrypt(Uint8List key, Uint8List iv, String value) async {
+    if (isPlaformSupported) {
+      return platform.invokeMethod<String>('encrypt', EncryptionParameters(key, iv, value).toMap());
+    }
     return base64Encode(_encrypter(key, iv, encryptContent: true).process(_toUint8List(value)));
   }
 
-  static String decrypt(Uint8List key, Uint8List iv, String encrypted) {
+  static Future<String?> decrypt(Uint8List key, Uint8List iv, String encrypted) async {
+    if (isPlaformSupported) {
+      return platform.invokeMethod<String>('decrypt', EncryptionParameters(key, iv, encrypted).toMap());
+    }
     return utf8.decode(_encrypter(key, iv).process(base64Decode(encrypted)));
   }
 
