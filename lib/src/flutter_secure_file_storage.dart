@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter_secure_file_storage/src/encryption_util.dart';
 import 'package:flutter_secure_file_storage/src/file_storage.dart';
@@ -27,7 +26,7 @@ class FlutterSecureFileStorage {
     assert(key.isNotEmpty, 'key must not be empty');
     if (value == null) return delete(key: key);
     final encryptionKey = await _secureStorage.getOrGenerateKey(key);
-    final encryptionIV = await _secureStorage.getOrGenerateIV(key);
+    final encryptionIV = await _secureStorage.generateIV(key);
     final encrypted = EncryptionUtil.encrypt(encryptionKey, encryptionIV, value);
     await FileStorage.write(_filename(key), encrypted);
     _keys.add(key);

@@ -8,7 +8,6 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  encrypt: ^5.0.1
   pointycastle: ^3.4.0
   flutter:
     sdk: flutter
