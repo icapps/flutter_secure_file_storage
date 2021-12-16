@@ -27,7 +27,9 @@ class EncryptionUtil {
 
   static Future<EncryptionResult?> encrypt(Uint8List key, String value) async {
     if (isPlaformSupported) {
-      return platform.invokeMethod<EncryptionResult>('encrypt', EncryptionParameters(key, value).toMap());
+      final result = await platform.invokeMethod<Map<String, dynamic>>('encrypt', EncryptionParameters(key, value).toMap());
+      if (result == null) return null;
+      return EncryptionResult.fromMap(result);
     }
     final iv = generateSecureIV();
     final result = base64Encode(_encrypter(key, iv, encryptContent: true).process(_toUint8List(value)));
