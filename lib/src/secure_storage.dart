@@ -34,8 +34,12 @@ class SecureStorage {
 
   Future<Uint8List> generateIV(String key) async {
     final generated = EncryptionUtil.generateSecureIV();
-    await _storage.write(key: _ivKey(key), value: base64Encode(generated));
+    await saveIV(key, generated);
     return generated;
+  }
+
+  Future<void> saveIV(String key, Uint8List iv) async {
+    await _storage.write(key: _ivKey(key), value: base64Encode(iv));
   }
 
   Future<Uint8List> getOrGenerateKey(String key) async {

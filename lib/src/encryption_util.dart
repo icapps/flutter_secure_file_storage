@@ -25,16 +25,18 @@ class EncryptionUtil {
 
   static Uint8List _toUint8List(String string) => Uint8List.fromList(string.codeUnits);
 
-  static Future<String?> encrypt(Uint8List key, Uint8List iv, String value) async {
+  static Future<EncryptionResult?> encrypt(Uint8List key, String value) async {
     if (isPlaformSupported) {
-      return platform.invokeMethod<String>('encrypt', EncryptionParameters(key, iv, value).toMap());
+      return platform.invokeMethod<EncryptionResult>('encrypt', EncryptionParameters(key, value).toMap());
     }
-    return base64Encode(_encrypter(key, iv, encryptContent: true).process(_toUint8List(value)));
+    final iv = generateSecureIV();
+    final result = base64Encode(_encrypter(key, iv, encryptContent: true).process(_toUint8List(value)));
+    return EncryptionResult(iv, result);
   }
 
   static Future<String?> decrypt(Uint8List key, Uint8List iv, String encrypted) async {
     if (isPlaformSupported) {
-      return platform.invokeMethod<String>('decrypt', EncryptionParameters(key, iv, encrypted).toMap());
+      return platform.invokeMethod<String>('decrypt', EncryptionParameters(key, encrypted).toMap());
     }
     return utf8.decode(_encrypter(key, iv).process(base64Decode(encrypted)));
   }

@@ -26,9 +26,10 @@ class FlutterSecureFileStorage {
     assert(key.isNotEmpty, 'key must not be empty');
     if (value == null) return delete(key: key);
     final encryptionKey = await _secureStorage.getOrGenerateKey(key);
-    final encryptionIV = await _secureStorage.generateIV(key);
-    final encrypted = await EncryptionUtil.encrypt(encryptionKey, encryptionIV, value) ?? '';
-    await FileStorage.write(_filename(key), encrypted);
+    final encrypted = await EncryptionUtil.encrypt(encryptionKey, value);
+    if (encrypted == null) return delete(key: key);
+    await _secureStorage.saveIV(key, encrypted.iv);
+    await FileStorage.write(_filename(key), encrypted.value);
     _keys.add(key);
   }
 
