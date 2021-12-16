@@ -18,7 +18,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 final storage = FlutterSecureFileStorage(FlutterSecureStorage());
 
 // Read value
-String value = await storage.read(key: key);
+final value = await storage.read<String>(key: key);
 
 // Read all values
 Map<String, String> allValues = await storage.readAll();

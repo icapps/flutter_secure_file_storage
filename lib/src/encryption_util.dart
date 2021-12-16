@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -23,13 +22,11 @@ class EncryptionUtil {
       ..init(encryptContent, ParametersWithIV<KeyParameter>(KeyParameter(key), iv));
   }
 
-  static Uint8List _toUint8List(String string) => Uint8List.fromList(string.codeUnits);
-
   static Future<EncryptionResult?> encrypt(Uint8List key, Uint8List value) async {
     if (isPlaformSupported) {
-      final result = await platform.invokeMethod<Map<String, dynamic>>('encrypt', EncryptionParameters(key, value).toMap());
+      final result = await platform.invokeMethod('encrypt', EncryptionParameters(key, value).toMap());
       if (result == null) return null;
-      return EncryptionResult.fromMap(result);
+      return EncryptionResult.fromMap(Map<String, dynamic>.from(result));
     }
     final iv = generateSecureIV();
     final result = _encrypter(key, iv, encryptContent: true).process(value);
