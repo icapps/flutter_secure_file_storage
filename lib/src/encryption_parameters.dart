@@ -10,17 +10,17 @@ class EncryptionParameters {
 
   Map<String, dynamic> toMap() {
     return {
-      'key': key.toList(),
-      if (iv != null) 'iv': iv!.toList(),
-      'value': value.toList(),
+      'key': key,
+      if (iv != null) 'iv': iv,
+      'value': value,
     };
   }
 
   factory EncryptionParameters.fromMap(Map<String, dynamic> map) {
     return EncryptionParameters(
-      Uint8List.fromList(map['key']),
-      Uint8List.fromList(map['value']),
-      iv: map['iv'] == null ? null : Uint8List.fromList(map['iv']),
+      map['key'],
+      map['value'],
+      iv: map['iv'],
     );
   }
 
@@ -37,15 +37,15 @@ class EncryptionResult {
 
   Map<String, dynamic> toMap() {
     return {
-      'iv': iv.toList(),
-      'value': value.toList(),
+      'iv': iv,
+      'value': value,
     };
   }
 
   factory EncryptionResult.fromMap(Map<String, dynamic> map) {
     return EncryptionResult(
-      Uint8List.fromList(map['iv']),
-      Uint8List.fromList(map['value']),
+      map['iv'],
+      map['value'],
     );
   }
 
