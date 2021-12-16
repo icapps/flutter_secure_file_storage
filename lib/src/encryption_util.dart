@@ -38,7 +38,7 @@ class EncryptionUtil {
 
   static Future<Uint8List?> decrypt(Uint8List key, Uint8List iv, Uint8List encrypted) async {
     if (isPlaformSupported) {
-      return platform.invokeMethod<Uint8List>('decrypt', EncryptionParameters(key, encrypted).toMap());
+      return platform.invokeMethod<Uint8List>('decrypt', EncryptionParameters(key, encrypted, iv: iv).toMap());
     }
     return _encrypter(key, iv).process(encrypted);
   }
