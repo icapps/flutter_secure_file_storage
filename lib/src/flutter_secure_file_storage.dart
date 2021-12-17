@@ -28,9 +28,12 @@ class FlutterSecureFileStorage {
     assert(key.isNotEmpty, 'key must not be empty');
     if (value == null) return delete(key: key);
     assert(T == String || T == Uint8List, 'value must be String or Uint8List');
-    final convertedValue = (value is String) ? Uint8List.fromList(utf8.encode(value)) : value as Uint8List;
+    final convertedValue = (value is String)
+        ? Uint8List.fromList(utf8.encode(value))
+        : value as Uint8List;
     final encryptionKey = await _secureStorage.getOrGenerateKey(key);
-    final encrypted = await EncryptionUtil.encrypt(encryptionKey, convertedValue);
+    final encrypted =
+        await EncryptionUtil.encrypt(encryptionKey, convertedValue);
     if (encrypted == null) return delete(key: key);
     await _secureStorage.saveIV(key, encrypted.iv);
     await FileStorage.write(_filename(key), encrypted.value);
@@ -46,7 +49,8 @@ class FlutterSecureFileStorage {
     if (encryptionKey == null || encryptionIV == null) return null;
     final encrypted = await FileStorage.read(_filename(key));
     if (encrypted == null) return null;
-    final result = await EncryptionUtil.decrypt(encryptionKey, encryptionIV, encrypted);
+    final result =
+        await EncryptionUtil.decrypt(encryptionKey, encryptionIV, encrypted);
     if (result == null) return null;
     if (T == String) return utf8.decode(result) as T;
     return result as T;

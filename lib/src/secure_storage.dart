@@ -14,7 +14,8 @@ class SecureStorage {
 
   Future<void> deleteIV(String key) async => _storage.delete(key: _ivKey(key));
 
-  Future<void> deleteKey(String key) async => _storage.delete(key: _keyKey(key));
+  Future<void> deleteKey(String key) async =>
+      _storage.delete(key: _keyKey(key));
 
   Future<Uint8List?> getIVOrNull(String key) async {
     final storageKey = _ivKey(key);

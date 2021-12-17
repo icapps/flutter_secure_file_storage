@@ -25,3 +25,5 @@ flutter:
       android:
         package: com.icapps.flutter_secure_file_storage
         pluginClass: SecureFileStoragePlugin
+      ios:
+        pluginClass: FlutterSecureFileStoragePlugin

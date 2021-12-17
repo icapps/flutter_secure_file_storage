@@ -26,7 +26,8 @@ class EncryptionParameters {
 
   String toJson() => json.encode(toMap());
 
-  factory EncryptionParameters.fromJson(String source) => EncryptionParameters.fromMap(json.decode(source));
+  factory EncryptionParameters.fromJson(String source) =>
+      EncryptionParameters.fromMap(json.decode(source));
 }
 
 class EncryptionResult {
@@ -51,5 +52,6 @@ class EncryptionResult {
 
   String toJson() => json.encode(toMap());
 
-  factory EncryptionResult.fromJson(String source) => EncryptionResult.fromMap(json.decode(source));
+  factory EncryptionResult.fromJson(String source) =>
+      EncryptionResult.fromMap(json.decode(source));
 }

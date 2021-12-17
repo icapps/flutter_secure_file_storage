@@ -42,7 +42,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.icapps.flutter_secture_storage"
+        applicationId "com.icapps.flutter_secure_file_storage_example"
         minSdkVersion 19
         targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()

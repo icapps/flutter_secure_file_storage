@@ -3,9 +3,11 @@ import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 
 class FileStorage {
-  static Future<String> get _localPath async => (await getApplicationDocumentsDirectory()).path;
+  static Future<String> get _localPath async =>
+      (await getApplicationDocumentsDirectory()).path;
 
-  static Future<File> _localFile(String filename) async => File('${await _localPath}/$filename');
+  static Future<File> _localFile(String filename) async =>
+      File('${await _localPath}/$filename');
 
   static Future<Uint8List?> read(String filename) async {
     try {
