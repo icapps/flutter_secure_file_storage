@@ -8,11 +8,12 @@ environment:
   flutter: ">=2.5.0"
 
 dependencies:
-  pointycastle: ^3.4.0
+  device_info_plus: ^3.2.0
   flutter:
     sdk: flutter
   flutter_secure_storage: ^5.0.2
   path_provider: ^2.0.8
+  pointycastle: ^3.4.0
 
 dev_dependencies:
   flutter_test:
