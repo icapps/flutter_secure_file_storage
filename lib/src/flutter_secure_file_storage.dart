@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:computer/computer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_file_storage/src/encryption_util.dart';
 import 'package:flutter_secure_file_storage/src/file_storage.dart';
 import 'package:flutter_secure_file_storage/src/secure_storage.dart';
@@ -46,7 +48,21 @@ class FlutterSecureFileStorage {
     if (encryptionKey == null || encryptionIV == null) return null;
     final encrypted = await FileStorage.read(_filename(key));
     if (encrypted == null) return null;
-    final result = await EncryptionUtil.decrypt(encryptionKey, encryptionIV, encrypted);
+    final computer = Computer.create();
+    await computer.turnOn();
+    var start = DateTime.now().millisecondsSinceEpoch;
+    final result = await EncryptionUtil.decrypt(encryptionKey, encryptionIV, encrypted, usePlatformIfAvailable: false);
+    print('decryption dart took ${DateTime.now().millisecondsSinceEpoch - start} ms');
+    start = DateTime.now().millisecondsSinceEpoch;
+    await EncryptionUtil.decrypt(encryptionKey, encryptionIV, encrypted, usePlatformIfAvailable: true);
+    print('decryption native took ${DateTime.now().millisecondsSinceEpoch - start} ms');
+    start = DateTime.now().millisecondsSinceEpoch;
+    await compute(decrypt, DecryptParams(encryptionKey, encryptionIV, encrypted, usePlatformIfAvailable: false));
+    print('decryption compute took ${DateTime.now().millisecondsSinceEpoch - start} ms');
+    start = DateTime.now().millisecondsSinceEpoch;
+    await computer.compute(decrypt, param: DecryptParams(encryptionKey, encryptionIV, encrypted, usePlatformIfAvailable: false));
+    print('decryption computer.compute took ${DateTime.now().millisecondsSinceEpoch - start} ms');
+    start = DateTime.now().millisecondsSinceEpoch;
     if (result == null) return null;
     if (T == String) return utf8.decode(result) as T;
     return result as T;
@@ -89,4 +105,17 @@ class FlutterSecureFileStorage {
 
   /// Deletes all keys with associated values.
   Future<void> deleteAll() => Future.wait(_keys.map((key) => delete(key: key)));
+}
+
+class DecryptParams {
+  final Uint8List key;
+  final Uint8List iv;
+  final Uint8List encrypted;
+  final bool usePlatformIfAvailable;
+
+  DecryptParams(this.key, this.iv, this.encrypted, {this.usePlatformIfAvailable = true});
+}
+
+Future<void> decrypt(DecryptParams params) async {
+  await EncryptionUtil.decrypt(params.key, params.iv, params.encrypted, usePlatformIfAvailable: params.usePlatformIfAvailable);
 }

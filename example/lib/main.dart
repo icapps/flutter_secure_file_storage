@@ -18,6 +18,7 @@ class _MyAppState extends State<MyApp> {
   String _content = '';
   String _loadedContent = '';
   String _key = '';
+  late final String _bigFile;
   bool _loading = false;
   late final FlutterSecureFileStorage _fileStorage;
 
@@ -25,6 +26,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _fileStorage = FlutterSecureFileStorage(const FlutterSecureStorage());
+    _bigFile = String.fromCharCodes(List<int>.generate(10000000, (int index) => index % 26 + 65));
   }
 
   @override
@@ -89,6 +91,31 @@ class _MyAppState extends State<MyApp> {
                 ] else ...[
                   Text('Content from file: $_loadedContent'),
                 ],
+                MaterialButton(
+                  child: const Text('Save big file'),
+                  onPressed: () async {
+                    setState(() {
+                      _loading = true;
+                    });
+                    await _fileStorage.write(key: 'big_file', value: _bigFile);
+                    setState(() {
+                      _loading = false;
+                    });
+                  },
+                ),
+                MaterialButton(
+                  child: const Text('Load big file'),
+                  onPressed: () async {
+                    setState(() {
+                      _loading = true;
+                    });
+                    await _fileStorage.read(key: 'big_file');
+                    setState(() {
+                      _content = 'done loading big file (10MB)';
+                      _loading = false;
+                    });
+                  },
+                ),
               ],
             ),
           ),
