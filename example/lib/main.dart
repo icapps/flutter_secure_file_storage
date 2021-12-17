@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_secure_file_storage/flutter_secure_file_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -77,7 +76,7 @@ class _MyAppState extends State<MyApp> {
                     setState(() {
                       _loading = true;
                     });
-                    final content = await _fileStorage.read(key: _key);
+                    final content = await _fileStorage.read<String>(key: _key);
                     setState(() {
                       _loadedContent = content ?? '';
                       _loading = false;

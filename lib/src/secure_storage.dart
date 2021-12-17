@@ -14,7 +14,8 @@ class SecureStorage {
 
   Future<void> deleteIV(String key) async => _storage.delete(key: _ivKey(key));
 
-  Future<void> deleteKey(String key) async => _storage.delete(key: _keyKey(key));
+  Future<void> deleteKey(String key) async =>
+      _storage.delete(key: _keyKey(key));
 
   Future<Uint8List?> getIVOrNull(String key) async {
     final storageKey = _ivKey(key);
@@ -34,8 +35,12 @@ class SecureStorage {
 
   Future<Uint8List> generateIV(String key) async {
     final generated = EncryptionUtil.generateSecureIV();
-    await _storage.write(key: _ivKey(key), value: base64Encode(generated));
+    await saveIV(key, generated);
     return generated;
+  }
+
+  Future<void> saveIV(String key, Uint8List iv) async {
+    await _storage.write(key: _ivKey(key), value: base64Encode(iv));
   }
 
   Future<Uint8List> getOrGenerateKey(String key) async {

@@ -1,4 +1,4 @@
-package com.example.example
+package com.icapps.flutter_secure_file_storage_example
 
 import io.flutter.embedding.android.FlutterActivity
 

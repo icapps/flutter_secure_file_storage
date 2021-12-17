@@ -4,11 +4,11 @@
 
 An implementation for flutter secure file storage. For example keychain has a soft limit of 4kb. Using the file system instead we can store much larger content.
 
-AES/GCM/NoPadding encryption is used to encrypt the data. The keys are generated using `Random.secure`, encrypted by the [pointycastle](https://pub.dev/packages/pointycastle) package and stored using the [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) package
+AES/GCM/NoPadding encryption is used to encrypt the data. The keys are generated using `Random.secure`and stored using the [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) package, the values are encrypted by the [pointycastle](https://pub.dev/packages/pointycastle) package or native for Android
 
 ## Usage
 
-It's implemented to use the same structure as FlutterSecureStorage and therefore you can switch easily between them.
+It's implemented to use the same structure as FlutterSecureStorage and therefore you can switch easily between them. But we also support Uint8List as input/output 
 
 ```dart
 import 'package:flutter_secure_file_storage/flutter_secure_file_storage.dart';
@@ -18,7 +18,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 final storage = FlutterSecureFileStorage(FlutterSecureStorage());
 
 // Read value
-String value = await storage.read(key: key);
+final value = await storage.read<String>(key: key);
 
 // Read all values
 Map<String, String> allValues = await storage.readAll();

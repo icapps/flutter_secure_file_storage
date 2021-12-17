@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter_secure_file_storage/src/encryption_util.dart';
 import 'package:flutter_secure_file_storage/src/file_storage.dart';
@@ -19,28 +20,40 @@ class FlutterSecureFileStorage {
   ///
   /// If the key was already in the storage, its associated value is changed.
   /// If the value is null, deletes associated value for the given [key].
-  Future<void> write({
+  /// Supports String and Uint8List values.
+  Future<void> write<T>({
     required String key,
-    required String? value,
+    required T? value,
   }) async {
     assert(key.isNotEmpty, 'key must not be empty');
     if (value == null) return delete(key: key);
+    assert(T == String || T == Uint8List, 'value must be String or Uint8List');
+    final convertedValue = (value is String)
+        ? Uint8List.fromList(utf8.encode(value))
+        : value as Uint8List;
     final encryptionKey = await _secureStorage.getOrGenerateKey(key);
-    final encryptionIV = await _secureStorage.generateIV(key);
-    final encrypted = EncryptionUtil.encrypt(encryptionKey, encryptionIV, value);
-    await FileStorage.write(_filename(key), encrypted);
+    final encrypted =
+        await EncryptionUtil.encrypt(encryptionKey, convertedValue);
+    if (encrypted == null) return delete(key: key);
+    await _secureStorage.saveIV(key, encrypted.iv);
+    await FileStorage.write(_filename(key), encrypted.value);
     _keys.add(key);
   }
 
   /// Decrypts and returns the value for the given [key] or null if [key] is not in the storage.
-  Future<String?> read({required String key}) async {
+  /// Supports String and Uint8List values.
+  Future<T?> read<T>({required String key}) async {
     assert(key.isNotEmpty, 'key must not be empty');
     final encryptionKey = await _secureStorage.getKeyOrNull(key);
     final encryptionIV = await _secureStorage.getIVOrNull(key);
     if (encryptionKey == null || encryptionIV == null) return null;
     final encrypted = await FileStorage.read(_filename(key));
     if (encrypted == null) return null;
-    return EncryptionUtil.decrypt(encryptionKey, encryptionIV, encrypted);
+    final result =
+        await EncryptionUtil.decrypt(encryptionKey, encryptionIV, encrypted);
+    if (result == null) return null;
+    if (T == String) return utf8.decode(result) as T;
+    return result as T;
   }
 
   /// Returns true if the storage contains the given [key].
