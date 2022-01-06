@@ -5,11 +5,14 @@ import 'package:flutter_secure_file_storage/src/encryption_util.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorage {
+  static const _keysStorageKey = 'flutter_secure_file_storage_keys';
+  static const _keysStorageDelimiter = ',';
   final FlutterSecureStorage _storage;
 
   const SecureStorage(this._storage);
 
   String _ivKey(String key) => '$key-iv';
+
   String _keyKey(String key) => '$key-key';
 
   Future<void> deleteIV(String key) async => _storage.delete(key: _ivKey(key));
@@ -51,5 +54,14 @@ class SecureStorage {
     final generated = EncryptionUtil.generateSecureKey();
     await _storage.write(key: _keyKey(key), value: base64Encode(generated));
     return generated;
+  }
+
+  void saveKeys(List<String> keys) => _storage.write(
+      key: _keysStorageKey, value: keys.join(_keysStorageDelimiter));
+
+  Future<List<String>> readKeys() async {
+    final value = await _storage.read(key: _keysStorageKey);
+    if (value == null) return [];
+    return value.split(_keysStorageDelimiter);
   }
 }
