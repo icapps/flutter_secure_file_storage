@@ -8,8 +8,7 @@ class FileStorage {
 
   FileStorage();
 
-  Future<String> get documentsPath async =>
-      (await getApplicationDocumentsDirectory()).path;
+  Future<String> get documentsPath async => (await getApplicationDocumentsDirectory()).path;
 
   Future<File> _localFile(String filename) async {
     final outputPath = this.outputPath;
@@ -29,7 +28,7 @@ class FileStorage {
   Future<bool> exists(String filename) async {
     try {
       final file = await _localFile(filename);
-      return file.exists();
+      return file.existsSync();
     } catch (e) {
       return false;
     }
@@ -37,7 +36,7 @@ class FileStorage {
 
   Future<File> write(String filename, Uint8List content) async {
     final file = await _localFile(filename);
-    if (!await file.exists()) {
+    if (!file.existsSync()) {
       await file.create(recursive: true);
     }
     return file.writeAsBytes(content);
