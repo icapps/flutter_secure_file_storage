@@ -1,3 +1,15 @@
+## 0.0.4 - 07/01/2022
+
+### Fixed
+* bug where an empty key was saved to the `flutter_secure_file_storage_keys`
+* Future & await issues
+### Added
+* support to override the fileStorage. By default we will use DocumentsFileStorage
+* locking operations per key
+* locking reading & writing the `flutter_secure_file_storage_keys`
+### Breaking
+* custom outputpath moved to the DocumentsFileStorage
+
 ## 0.0.3 - 06/01/2022
 
 ### Fixed
