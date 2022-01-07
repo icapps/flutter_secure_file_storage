@@ -119,20 +119,7 @@ class FlutterSecureFileStorage {
     });
   }
 
-  /// Decrypts and returns all keys with associated values.
-  Future<Map<String, String>> readAll() async {
-    await _getKeys();
-    final map = <String, String>{};
-    for (final key in _keys) {
-      await _synchronized(key, () async {
-        final value = await read<String>(key: key);
-        if (value != null) map[key] = value;
-      });
-    }
-    return map;
-  }
-
-  /// Decrypts and returns all keys with associated values.
+  /// Returns all keys with associated values.
   Future<Set<String>> getAllKeys() async {
     await _getKeys();
     return _keys;
