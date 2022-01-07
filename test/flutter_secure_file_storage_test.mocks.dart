@@ -201,14 +201,6 @@ class MockFileStorage extends _i1.Mock implements _i5.FileStorage {
   }
 
   @override
-  set outputPath(String? _outputPath) =>
-      super.noSuchMethod(Invocation.setter(#outputPath, _outputPath),
-          returnValueForMissingStub: null);
-  @override
-  _i4.Future<String> get documentsPath =>
-      (super.noSuchMethod(Invocation.getter(#documentsPath),
-          returnValue: Future<String>.value('')) as _i4.Future<String>);
-  @override
   _i4.Future<_i6.Uint8List?> read(String? filename) =>
       (super.noSuchMethod(Invocation.method(#read, [filename]),
               returnValue: Future<_i6.Uint8List?>.value())

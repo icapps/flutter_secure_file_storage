@@ -33,7 +33,7 @@ class EncryptionUtil {
   static Future<EncryptionResult?> encrypt(
       Uint8List key, Uint8List value) async {
     if (await isPlaformSupported) {
-      final result = await platform.invokeMethod(
+      final result = await platform.invokeMethod<Map>(
           'encrypt', EncryptionParameters(key, value).toMap());
       if (result == null) return null;
       return EncryptionResult.fromMap(Map<String, dynamic>.from(result));

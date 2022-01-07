@@ -10,9 +10,8 @@ class DocumentsFileStorage extends FileStorage {
   Future<String> get documentsPath async =>
       (await getApplicationDocumentsDirectory()).path;
 
-  /// Set a custom output path, So not all files are generated at the same location.
-  ///
-  /// Default location is under the app documents folder
+  /// By default the files are saved under your app documents folder.
+  /// You could use a custom output path to save the file somewhere else in your app documents folder.
   void setCustomOutputPath(String outputPath) {
     _outputPath = outputPath;
   }

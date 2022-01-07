@@ -68,7 +68,7 @@ void main() {
           .thenAnswer((realInvocation) async => null);
       final secureStorage = SecureStorage(mockSecureStorage);
       final data = await secureStorage.readKeys();
-      expect(data, []);
+      expect(data, <String>[]);
       verify(mockSecureStorage.read(key: 'flutter_secure_file_storage_keys'))
           .called(1);
       verifyNoMoreInteractions(mockSecureStorage);

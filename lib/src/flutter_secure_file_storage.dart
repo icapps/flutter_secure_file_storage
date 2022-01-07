@@ -10,15 +10,20 @@ import 'package:flutter_secure_file_storage/src/secure_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:synchronized/synchronized.dart';
 
+/// FlutterSecureFileStorage storage allows you to save, read and delete files
+/// The files are saved using the fileStorage but the content is always encrypted using: AES/GCM
 class FlutterSecureFileStorage {
   late final SecureStorage _secureStorage;
   late FileStorage _fileStorage;
+  final _locksLock = Lock();
   final Map<String, Lock> _locks = {};
   var _keys = <String>{};
 
   String? _outputPath;
 
-  // fileStorage is provided so you can use your own fileStorage implementation
+  /// FlutterSecureFileStorage will use
+  ///   - storage to save the key, iv & encryptionKey
+  ///   - fileStorage to save, read, delete the file with the encrypted content
   FlutterSecureFileStorage(FlutterSecureStorage storage,
       {FileStorage? fileStorage}) {
     _secureStorage = SecureStorage(storage);
@@ -120,11 +125,17 @@ class FlutterSecureFileStorage {
     final map = <String, String>{};
     for (final key in _keys) {
       await _synchronized(key, () async {
-        final value = await read(key: key);
+        final value = await read<String>(key: key);
         if (value != null) map[key] = value;
       });
     }
     return map;
+  }
+
+  /// Decrypts and returns all keys with associated values.
+  Future<Set<String>> getAllKeys() async {
+    await _getKeys();
+    return _keys;
   }
 
   /// Deletes all keys with associated values.
@@ -155,13 +166,14 @@ class FlutterSecureFileStorage {
     String key,
     FutureOr<T> Function() computation,
   ) async {
-    final lock = _locks.putIfAbsent(key, () => Lock(reentrant: true));
-
-    final result = await lock.synchronized(() {
-      final result = computation.call();
+    final lock = await _locksLock.synchronized(
+        () => _locks.putIfAbsent(key, () => Lock(reentrant: true)));
+    try {
+      final result = await lock.synchronized(() => computation.call());
+      await _locksLock.synchronized(() => _locks.remove(lock));
       return result;
-    });
-    _locks.remove(lock);
-    return result;
+    } finally {
+      await _locksLock.synchronized(() => _locks.remove(lock));
+    }
   }
 }
