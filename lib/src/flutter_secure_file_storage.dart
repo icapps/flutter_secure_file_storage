@@ -53,7 +53,7 @@ class FlutterSecureFileStorage {
     if (encrypted == null) return delete(key: key);
     await _secureStorage.saveIV(key, encrypted.iv);
     await _fileStorage.write(_filename(key), encrypted.value);
-    _keys.add(base64Encode(utf8.encode(key)));
+    _keys.add(key);
     _updateKeys();
   }
 
@@ -99,7 +99,7 @@ class FlutterSecureFileStorage {
       _secureStorage.deleteIV(key),
       _fileStorage.delete(_filename(key)),
     ]);
-    _keys.remove(base64Encode(utf8.encode(key)));
+    _keys.remove(key);
     _updateKeys();
   }
 
@@ -128,10 +128,13 @@ class FlutterSecureFileStorage {
     return join(outputPath, fileName);
   }
 
-  Future<void> _updateKeys() async => _secureStorage.saveKeys(_keys);
+  Future<void> _updateKeys() async {
+    final encodedData = _keys.map((e) => base64Encode(utf8.encode(e))).toList();
+    _secureStorage.saveKeys(encodedData);
+  }
 
   Future<void> _getKeys() async {
-    final data = await _secureStorage.readKeys();
-    _keys = data.map((e) => utf8.decode(base64Decode(e))).toList();
+    final decodedData = await _secureStorage.readKeys();
+    _keys = decodedData.map((e) => utf8.decode(base64Decode(e))).toList();
   }
 }
