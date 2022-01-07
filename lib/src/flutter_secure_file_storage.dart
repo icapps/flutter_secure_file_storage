@@ -27,6 +27,13 @@ class FlutterSecureFileStorage {
 
   /// Encrypts and saves the [key] with the given [value].
   ///
+  /// The key itself is used to get or generate the:
+  ///   IV: length: 16
+  ///   encryptionKey: length 32
+  /// The key is saved in flutter_secure_storage with base64 encoding.
+  ///
+  /// Encryption is done with: AES/GCM
+  ///
   /// If the key was already in the storage, its associated value is changed.
   /// If the value is null, deletes associated value for the given [key].
   /// Supports String and Uint8List values.
@@ -46,11 +53,16 @@ class FlutterSecureFileStorage {
     if (encrypted == null) return delete(key: key);
     await _secureStorage.saveIV(key, encrypted.iv);
     await _fileStorage.write(_filename(key), encrypted.value);
-    _keys.add(key);
+    _keys.add(base64Encode(utf8.encode(key)));
     _updateKeys();
   }
 
   /// Decrypts and returns the value for the given [key] or null if [key] is not in the storage.
+  ///
+  /// The key itself is used to get the:
+  ///   IV: length: 16
+  ///   encryptionKey: length 32
+  ///
   /// Supports String and Uint8List values.
   Future<T?> read<T>({required String key}) async {
     assert(key.isNotEmpty, 'key must not be empty');
@@ -67,6 +79,10 @@ class FlutterSecureFileStorage {
   }
 
   /// Returns true if the storage contains the given [key].
+  ///
+  /// The key itself is used to get the:
+  ///   IV: length: 16
+  ///   encryptionKey: length 32
   Future<bool> containsKey({
     required String key,
   }) async {
@@ -80,6 +96,8 @@ class FlutterSecureFileStorage {
   }
 
   /// Deletes associated value for the given [key].
+  ///
+  /// The key itself is used to delete the IV & encryptionKey & file
   Future<void> delete({
     required String key,
   }) async {
@@ -89,7 +107,7 @@ class FlutterSecureFileStorage {
       _secureStorage.deleteIV(key),
       _fileStorage.delete(_filename(key)),
     ]);
-    _keys.remove(key);
+    _keys.remove(base64Encode(utf8.encode(key)));
     _updateKeys();
   }
 
