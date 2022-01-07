@@ -25,7 +25,14 @@ class FlutterSecureFileStorage {
     _fileStorage.outputPath = outputPath;
   }
 
-  /// Encrypts and saves the [key] with the given [value].
+  /// Encrypts the given [value] with the encryption key associated with [key]
+  ///
+  /// The key itself is used to get or generate the:
+  ///   IV: length: 16
+  ///   encryptionKey: length 32
+  /// The key is saved in flutter_secure_storage with base64 encoding.
+  ///
+  /// Encryption is done with: AES/GCM
   ///
   /// If the key was already in the storage, its associated value is changed.
   /// If the value is null, deletes associated value for the given [key].
@@ -51,6 +58,7 @@ class FlutterSecureFileStorage {
   }
 
   /// Decrypts and returns the value for the given [key] or null if [key] is not in the storage.
+  ///
   /// Supports String and Uint8List values.
   Future<T?> read<T>({required String key}) async {
     assert(key.isNotEmpty, 'key must not be empty');
@@ -80,6 +88,8 @@ class FlutterSecureFileStorage {
   }
 
   /// Deletes associated value for the given [key].
+  ///
+  /// All associated data for the given key is removed
   Future<void> delete({
     required String key,
   }) async {
@@ -118,7 +128,13 @@ class FlutterSecureFileStorage {
     return join(outputPath, fileName);
   }
 
-  Future<void> _updateKeys() async => _secureStorage.saveKeys(_keys);
+  Future<void> _updateKeys() async {
+    final encodedData = _keys.map((e) => base64Encode(utf8.encode(e))).toList();
+    _secureStorage.saveKeys(encodedData);
+  }
 
-  Future<void> _getKeys() async => _keys = await _secureStorage.readKeys();
+  Future<void> _getKeys() async {
+    final decodedData = await _secureStorage.readKeys();
+    _keys = decodedData.map((e) => utf8.decode(base64Decode(e))).toList();
+  }
 }
