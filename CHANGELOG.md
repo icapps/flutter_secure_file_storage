@@ -1,3 +1,8 @@
+## 0.0.5 - 07/01/2022
+
+### Fixed
+* expose DocumentsFileStorage
+
 ## 0.0.4 - 07/01/2022
 
 ### Fixed
