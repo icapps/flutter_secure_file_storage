@@ -3,13 +3,15 @@ import 'dart:typed_data';
 
 import 'package:flutter_secure_file_storage/src/encryption_util.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:synchronized/synchronized.dart';
 
 class SecureStorage {
   static const _keysStorageKey = 'flutter_secure_file_storage_keys';
   static const _keysStorageDelimiter = ',';
   final FlutterSecureStorage _storage;
+  final _keysLock = Lock();
 
-  const SecureStorage(this._storage);
+  SecureStorage(this._storage);
 
   String _ivKey(String key) => '$key-iv';
 
@@ -56,12 +58,17 @@ class SecureStorage {
     return generated;
   }
 
-  void saveKeys(List<String> keys) => _storage.write(
-      key: _keysStorageKey, value: keys.join(_keysStorageDelimiter));
-
-  Future<List<String>> readKeys() async {
-    final value = await _storage.read(key: _keysStorageKey);
-    if (value == null) return [];
-    return value.split(_keysStorageDelimiter);
+  Future<void> saveKeys(List<String> keys) {
+    return _keysLock.synchronized(() async {
+      if (keys.isEmpty) return _storage.delete(key: _keysStorageKey);
+      return _storage.write(
+          key: _keysStorageKey, value: keys.join(_keysStorageDelimiter));
+    });
   }
+
+  Future<List<String>> readKeys() async => _keysLock.synchronized(() async {
+        final value = await _storage.read(key: _keysStorageKey);
+        if (value == null) return [];
+        return value.split(_keysStorageDelimiter);
+      });
 }
