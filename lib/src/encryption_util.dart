@@ -9,23 +9,32 @@ import "package:pointycastle/pointycastle.dart";
 
 class EncryptionUtil {
   static final Random _generator = Random.secure();
-  static const platform = MethodChannel('be.icapps.flutter_secure_file_storage');
+  static const platform =
+      MethodChannel('be.icapps.flutter_secure_file_storage');
 
-  static Future<bool> get isPlaformSupported async => Platform.isAndroid || (Platform.isIOS && (await DeviceInfoPlugin().iosInfo).systemVersion?.startsWith('12.') != true);
+  static Future<bool> get isPlaformSupported async =>
+      Platform.isAndroid ||
+      (Platform.isIOS &&
+          (await DeviceInfoPlugin().iosInfo).systemVersion?.startsWith('12.') !=
+              true);
 
   static Uint8List generateSecureKey() => _fromSecureRandom(32);
 
   static Uint8List generateSecureIV() => _fromSecureRandom(16);
 
-  static BlockCipher _encrypter(Uint8List key, Uint8List iv, {bool encryptContent = false}) {
+  static BlockCipher _encrypter(Uint8List key, Uint8List iv,
+      {bool encryptContent = false}) {
     return BlockCipher('AES/GCM')
       ..reset()
-      ..init(encryptContent, ParametersWithIV<KeyParameter>(KeyParameter(key), iv));
+      ..init(encryptContent,
+          ParametersWithIV<KeyParameter>(KeyParameter(key), iv));
   }
 
-  static Future<EncryptionResult?> encrypt(Uint8List key, Uint8List value) async {
+  static Future<EncryptionResult?> encrypt(
+      Uint8List key, Uint8List value) async {
     if (await isPlaformSupported) {
-      final result = await platform.invokeMethod('encrypt', EncryptionParameters(key, value).toMap());
+      final result = await platform.invokeMethod(
+          'encrypt', EncryptionParameters(key, value).toMap());
       if (result == null) return null;
       return EncryptionResult.fromMap(Map<String, dynamic>.from(result));
     }
@@ -34,14 +43,17 @@ class EncryptionUtil {
     return EncryptionResult(iv, result);
   }
 
-  static Future<Uint8List?> decrypt(Uint8List key, Uint8List iv, Uint8List encrypted) async {
+  static Future<Uint8List?> decrypt(
+      Uint8List key, Uint8List iv, Uint8List encrypted) async {
     if (await isPlaformSupported) {
-      return platform.invokeMethod<Uint8List>('decrypt', EncryptionParameters(key, encrypted, iv: iv).toMap());
+      return platform.invokeMethod<Uint8List>(
+          'decrypt', EncryptionParameters(key, encrypted, iv: iv).toMap());
     }
     return _encrypter(key, iv).process(encrypted);
   }
 
   static Uint8List _fromSecureRandom(int length) {
-    return Uint8List.fromList(List.generate(length, (i) => _generator.nextInt(256)));
+    return Uint8List.fromList(
+        List.generate(length, (i) => _generator.nextInt(256)));
   }
 }

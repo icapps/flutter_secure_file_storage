@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:path/path.dart';
 import 'package:flutter_secure_file_storage/src/encryption_util.dart';
 import 'package:flutter_secure_file_storage/src/file_storage.dart';
 import 'package:flutter_secure_file_storage/src/secure_storage.dart';
@@ -8,13 +9,21 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FlutterSecureFileStorage {
   late final SecureStorage _secureStorage;
-  final _keys = <String>[];
+  final _fileStorage = FileStorage();
+  var _keys = <String>[];
+
+  String? _outputPath;
 
   FlutterSecureFileStorage(FlutterSecureStorage storage) {
     _secureStorage = SecureStorage(storage);
   }
 
-  String _filename(String key) => '${base64Encode(utf8.encode(key))}.enc';
+  /// Set a custom output path, So not all files are generated at the same location.
+  ///
+  /// Default location is under the app documents folder
+  void setCustomOutputPath(String outputPath) {
+    _fileStorage.outputPath = outputPath;
+  }
 
   /// Encrypts and saves the [key] with the given [value].
   ///
@@ -36,8 +45,9 @@ class FlutterSecureFileStorage {
         await EncryptionUtil.encrypt(encryptionKey, convertedValue);
     if (encrypted == null) return delete(key: key);
     await _secureStorage.saveIV(key, encrypted.iv);
-    await FileStorage.write(_filename(key), encrypted.value);
+    await _fileStorage.write(_filename(key), encrypted.value);
     _keys.add(key);
+    _updateKeys();
   }
 
   /// Decrypts and returns the value for the given [key] or null if [key] is not in the storage.
@@ -47,7 +57,7 @@ class FlutterSecureFileStorage {
     final encryptionKey = await _secureStorage.getKeyOrNull(key);
     final encryptionIV = await _secureStorage.getIVOrNull(key);
     if (encryptionKey == null || encryptionIV == null) return null;
-    final encrypted = await FileStorage.read(_filename(key));
+    final encrypted = await _fileStorage.read(_filename(key));
     if (encrypted == null) return null;
     final result =
         await EncryptionUtil.decrypt(encryptionKey, encryptionIV, encrypted);
@@ -61,11 +71,12 @@ class FlutterSecureFileStorage {
     required String key,
   }) async {
     assert(key.isNotEmpty, 'key must not be empty');
+    await _getKeys();
     if (!_keys.contains(key)) return false;
     final encryptionKey = await _secureStorage.getKeyOrNull(key);
     final encryptionIV = await _secureStorage.getIVOrNull(key);
     if (encryptionKey == null || encryptionIV == null) return false;
-    return FileStorage.exists(_filename(key));
+    return _fileStorage.exists(_filename(key));
   }
 
   /// Deletes associated value for the given [key].
@@ -76,13 +87,15 @@ class FlutterSecureFileStorage {
     await Future.wait([
       _secureStorage.deleteKey(key),
       _secureStorage.deleteIV(key),
-      FileStorage.delete(_filename(key)),
+      _fileStorage.delete(_filename(key)),
     ]);
     _keys.remove(key);
+    _updateKeys();
   }
 
   /// Decrypts and returns all keys with associated values.
   Future<Map<String, String>> readAll() async {
+    await _getKeys();
     final map = <String, String>{};
     for (final key in _keys) {
       final value = await read(key: key);
@@ -92,5 +105,20 @@ class FlutterSecureFileStorage {
   }
 
   /// Deletes all keys with associated values.
-  Future<void> deleteAll() => Future.wait(_keys.map((key) => delete(key: key)));
+  Future<void> deleteAll() async {
+    await _getKeys();
+    await Future.wait(_keys.map((key) => delete(key: key)));
+    await _getKeys();
+  }
+
+  String _filename(String key) {
+    final fileName = '${base64Encode(utf8.encode(key))}.enc';
+    final outputPath = _outputPath;
+    if (outputPath == null) return fileName;
+    return join(outputPath, fileName);
+  }
+
+  Future<void> _updateKeys() async => _secureStorage.saveKeys(_keys);
+
+  Future<void> _getKeys() async => _keys = await _secureStorage.readKeys();
 }
