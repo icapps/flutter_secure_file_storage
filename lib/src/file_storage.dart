@@ -8,7 +8,8 @@ class FileStorage {
 
   FileStorage();
 
-  Future<String> get documentsPath async => (await getApplicationDocumentsDirectory()).path;
+  Future<String> get documentsPath async =>
+      (await getApplicationDocumentsDirectory()).path;
 
   Future<File> _localFile(String filename) async {
     final outputPath = this.outputPath;
