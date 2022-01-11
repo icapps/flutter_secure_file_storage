@@ -6,7 +6,8 @@ import 'dart:async' as _i4;
 import 'dart:io' as _i3;
 import 'dart:typed_data' as _i6;
 
-import 'package:flutter_file_storage/src/file_storage/file_storage.dart' as _i5;
+import 'package:flutter_key_value_file_storage/src/file_storage/file_storage.dart'
+    as _i5;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 

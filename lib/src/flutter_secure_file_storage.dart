@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_secure_file_storage/flutter_secure_file_storage.dart';
+import 'package:flutter_key_value_file_storage/flutter_key_value_file_storage.dart';
 import 'package:flutter_secure_file_storage/src/manager/flutter_secure_file_storage_manager.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
