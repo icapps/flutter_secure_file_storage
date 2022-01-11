@@ -8,16 +8,21 @@ import 'package:flutter_secure_file_storage/src/secure_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureFileStorageManager extends FileStorageManager {
-  late final SecureStorage _secureStorage;
-  late FileStorage _fileStorage;
+  static const _keysStorageKeyDefault = 'flutter_secure_file_storage_keys';
 
-  SecureFileStorageManager(FlutterSecureStorage storage,
-      {FileStorage? fileStorage})
-      : super(
+  late final SecureStorage _secureStorage;
+
+  SecureFileStorageManager(
+    FlutterSecureStorage storage, {
+    FileStorage? fileStorage,
+    String? keysStorageKey,
+  }) : super(
           storage,
           fileStorage: fileStorage,
-          keysStorageKey: '',
-        );
+          keysStorageKey: keysStorageKey ?? _keysStorageKeyDefault,
+        ) {
+    _secureStorage = SecureStorage(storage);
+  }
 
   @override
   Future<void> performWrite(
@@ -26,7 +31,7 @@ class SecureFileStorageManager extends FileStorageManager {
     final encrypted = await EncryptionUtil.encrypt(encryptionKey, value);
     if (encrypted == null) return delete(key: key);
     await _secureStorage.saveIV(key, encrypted.iv);
-    await _fileStorage.write(_filename(key), encrypted.value);
+    await fileStorage.write(_filename(key), encrypted.value);
   }
 
   @override
@@ -34,7 +39,7 @@ class SecureFileStorageManager extends FileStorageManager {
     final encryptionKey = await _secureStorage.getKeyOrNull(key);
     final encryptionIV = await _secureStorage.getIVOrNull(key);
     if (encryptionKey == null || encryptionIV == null) return null;
-    final encrypted = await _fileStorage.read(_filename(key));
+    final encrypted = await fileStorage.read(_filename(key));
     if (encrypted == null) return null;
     return EncryptionUtil.decrypt(encryptionKey, encryptionIV, encrypted);
   }
@@ -44,7 +49,7 @@ class SecureFileStorageManager extends FileStorageManager {
     final encryptionKey = await _secureStorage.getKeyOrNull(key);
     final encryptionIV = await _secureStorage.getIVOrNull(key);
     if (encryptionKey == null || encryptionIV == null) return false;
-    return _fileStorage.exists(_filename(key));
+    return fileStorage.exists(_filename(key));
   }
 
   @override
@@ -52,7 +57,7 @@ class SecureFileStorageManager extends FileStorageManager {
     await Future.wait([
       _secureStorage.deleteKey(key),
       _secureStorage.deleteIV(key),
-      _fileStorage.delete(_filename(key)),
+      fileStorage.delete(_filename(key)),
     ]);
   }
 
