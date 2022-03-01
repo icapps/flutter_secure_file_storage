@@ -1,3 +1,8 @@
+## 0.0.6 - 11/01/2022
+
+### Refactor
+* Refactorred the implementation. Using flutter_file_storage for shared implementation.
+
 ## 0.0.5 - 07/01/2022
 
 ### Fixed

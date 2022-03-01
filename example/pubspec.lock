@@ -125,6 +125,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_key_value_file_storage:
+    dependency: transitive
+    description:
+      name: flutter_key_value_file_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -138,7 +145,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.4"
+    version: "0.0.6"
   flutter_secure_storage:
     dependency: "direct main"
     description:
