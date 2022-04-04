@@ -1,6 +1,6 @@
 name: flutter_secure_file_storage
 description: An implementation for flutter secure file storage. For example keychain has a soft limit of 4kb. Using the file system instead we can store much larger content
-version: 0.0.6
+version: 0.0.7
 homepage: https://github.com/icapps/flutter_secure_file_storage
 
 environment:
