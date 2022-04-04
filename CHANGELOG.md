@@ -1,3 +1,9 @@
+## 0.0.7 - 04/04/2022
+
+### Breaking
+* Updated the min sdk to 16 on Android
+* Updated flutter_secure_file_storage
+
 ## 0.0.6 - 11/01/2022
 
 ### Refactor
