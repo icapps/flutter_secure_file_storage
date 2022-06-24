@@ -1,3 +1,7 @@
+## 0.0.8 - 24/06/2022
+### Updated
+* Dependencies
+
 ## 0.0.7 - 04/04/2022
 
 ### Breaking
