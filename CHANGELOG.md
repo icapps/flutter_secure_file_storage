@@ -1,3 +1,12 @@
+## 0.1.0 - 17/10/2022
+### Updated
+* Dependencies
+
+### Fixed
+* Supported ios version check has been fixed for < 12
+* Use compute to encrypt on platforms without direct channel support
+* Cleanup code
+
 ## 0.0.8 - 24/06/2022
 ### Updated
 * Dependencies
