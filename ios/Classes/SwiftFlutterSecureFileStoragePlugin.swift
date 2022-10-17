@@ -5,12 +5,20 @@ import CryptoKit
 @available(iOS 13.0, *)
 public class SwiftFlutterSecureFileStoragePlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "be.icapps.flutter_secure_file_storage", binaryMessenger: registrar.messenger())
+    let channel = FlutterMethodChannel(name: "com.icapps.flutter_secure_file_storage", binaryMessenger: registrar.messenger())
     let instance = SwiftFlutterSecureFileStoragePlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+      if (call.method == "isSupported") {
+        if #available(iOS 13.0, *) {
+            result(true)
+        } else {
+            result(false)
+        }
+        return
+      }
       if let args = call.arguments as? Dictionary<String, Any> {
          switch (call.method) {
          case "encrypt":
