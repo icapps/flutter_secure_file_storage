@@ -17,7 +17,7 @@ class SecureFileStoragePlugin : MethodCallHandler, FlutterPlugin {
     private val mainHandler = Handler(Looper.getMainLooper())
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        methodChannel = MethodChannel(binding.binaryMessenger, "be.icapps.flutter_secure_file_storage").also {
+        methodChannel = MethodChannel(binding.binaryMessenger, "com.icapps.flutter_secure_file_storage").also {
             it.setMethodCallHandler(this)
         }
     }
@@ -30,6 +30,7 @@ class SecureFileStoragePlugin : MethodCallHandler, FlutterPlugin {
     override fun onMethodCall(call: MethodCall, result: Result) {
         try {
             when (call.method) {
+                "isSupported" -> result.success(true)
                 "encrypt" -> encryptToFile(
                     call.argument<ByteArray>("key")!!,
                     call.argument<ByteArray>("value")!!,

@@ -24,6 +24,7 @@ class SecureStorage {
     if (encryptionIVString != null) {
       return base64Decode(encryptionIVString);
     }
+    return null;
   }
 
   Future<Uint8List?> getKeyOrNull(String key) async {
@@ -32,6 +33,7 @@ class SecureStorage {
     if (encryptionKeyString != null) {
       return base64Decode(encryptionKeyString);
     }
+    return null;
   }
 
   Future<Uint8List> generateIV(String key) async {
