@@ -14,7 +14,7 @@ dependencies:
 flutter_key_value_file_storage: #^0.0.5
   git:
     url: git@github.com:icapps/flutter_key_value_file_storage.git
-    ref: 272a8e8d340e427241babc89d3951e0af937d85e
+    ref: 8ad0267c6394bc80a3410e6d4496603decc181b3
   flutter_secure_storage: ^6.0.0
   path: ^1.8.1
   path_provider: ^2.0.11
