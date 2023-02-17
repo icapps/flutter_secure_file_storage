@@ -1,6 +1,6 @@
 name: example
 description: A new Flutter project.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
@@ -11,13 +11,19 @@ dependencies:
     sdk: flutter
   flutter_secure_file_storage:
     path: ../
-  flutter_secure_storage: ^6.0.0
-  cupertino_icons: ^1.0.2
+  flutter_secure_storage: ^8.0.0
+  cupertino_icons: ^1.0.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
+
+dependency_overrides:
+  flutter_key_value_file_storage:
+    git:
+      url: https://github.com/icapps/flutter_key_value_file_storage.git
+      ref: 1d8dffae38650b1146925904a1bc794cdb0b5390
 
 flutter:
   uses-material-design: true
