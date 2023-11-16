@@ -1,3 +1,7 @@
+## 1.1.0
+### Updated
+* Dependencies
+
 ## 1.0.0
 ### Breaking
 * Min dart version 3.0.0
