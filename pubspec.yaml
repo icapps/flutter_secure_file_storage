@@ -11,7 +11,9 @@ dependencies:
   async: ^2.11.0
   flutter:
     sdk: flutter
-  flutter_key_value_file_storage: ^0.0.8
+  # TODO remove path dependency after merging: https://github.com/icapps/flutter_key_value_file_storage/pull/14
+  flutter_key_value_file_storage:
+    path: ../flutter_key_value_file_storage
   flutter_secure_storage: ^9.0.0
   path: ^1.8.3
   path_provider: ^2.0.15
