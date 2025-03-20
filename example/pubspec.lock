@@ -97,10 +97,11 @@ packages:
   flutter_key_value_file_storage:
     dependency: transitive
     description:
-      path: "../../flutter_key_value_file_storage"
-      relative: true
-    source: path
-    version: "0.0.9"
+      name: flutter_key_value_file_storage
+      sha256: bd41274a2f11e45d146d8f1da7a063790a398007fd2fe404f384b9672e4e2b53
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -115,7 +116,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.1.0"
+    version: "1.2.0"
   flutter_secure_storage:
     dependency: "direct main"
     description:
