@@ -1,3 +1,8 @@
+## 1.2.0
+### Updated
+* Android Gradle plugin version 8.8.0
+* [Migrate to apply Gradle plugins with the declarative plugins block](https://docs.flutter.dev/release/breaking-changes/flutter-gradle-plugin-apply)
+
 ## 1.1.0
 ### Updated
 * Dependencies
