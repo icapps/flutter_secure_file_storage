@@ -56,7 +56,11 @@ public class SwiftFlutterSecureFileStoragePlugin: NSObject, FlutterPlugin {
     }
     
     private func doDecrypt(key: FlutterStandardTypedData, value: FlutterStandardTypedData, iv: FlutterStandardTypedData, result: @escaping FlutterResult) {
-        
+        guard value.data.count >= 16 else {
+            result(FlutterError.init(code: "error", message: "Decryption failed: value of \(value.data.count) bytes is shorter than the 16 byte tag", details:nil))
+            return
+        }
+
         let actualData = value.data.subdata(in: 0..<value.data.count-16)
         let tag = value.data.subdata(in: value.data.count-16..<value.data.count)
         

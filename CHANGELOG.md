@@ -1,3 +1,7 @@
+## 1.2.1
+### Fixed
+* iOS crash when decrypting a value that is shorter than the authentication tag, e.g. a file that was truncated while being written
+
 ## 1.2.0
 ### Updated
 * Android Gradle plugin version 8.8.0
